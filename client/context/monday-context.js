@@ -15,8 +15,6 @@ export const MondayProvider = ({ ...props }) => {
     });
   }, []);
 
-  console.log(settings)
-
   return (
     <MondayContext.Provider value={{ settings }}>
       {props.children}

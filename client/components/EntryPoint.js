@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "./Layout";
 import { isValidUrl } from "../utils/isValidURL";
 import InvalidURL from "./EntryPoint/InvalidURL";
@@ -9,13 +9,17 @@ import BetaMessage from "./EntryPoint/BetaMessage";
 import TreeOne from "./Assets/TreeOne";
 import { GlobeIcon } from "@heroicons/react/outline";
 
-const EntryPoint = ({ setAuditURL }) => {
-  const [value, setValue] = useState("www.google.com");
+const EntryPoint = ({ setAuditURL, fetchAuditData }) => {
+  const [value, setValue] = useState("sld.codes");
   const [toastOpen, setToastOpen] = useState(false);
+
+  useEffect(() => {
+    setAuditURL(value);
+  }, [value, setAuditURL]);
 
   const onSubmit = () => {
     if (isValidUrl(value)) {
-      setAuditURL(value);
+      fetchAuditData();
     } else {
       setToastOpen(true);
     }

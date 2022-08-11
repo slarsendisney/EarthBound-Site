@@ -15,14 +15,14 @@ const Button = dynamic(() => import("monday-ui-react-core/dist/Button"), {
 });
 
 const Audit = () => {
-  const { setAuditURL } = useAudit();
+  const { reset } = useAudit();
   return (
     <div className="max-w-4xl mx-auto py-6">
       <div className="flex items-center justify-between pb-3">
         <Button
           kind="secondary"
           leftIcon={() => <ArrowLeftIcon className="h-4 mr-2" />}
-          onClick={() => setAuditURL(null)}
+          onClick={() => reset()}
         >
           Back
         </Button>

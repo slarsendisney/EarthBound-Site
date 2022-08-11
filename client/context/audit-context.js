@@ -6,19 +6,33 @@ const AuditContext = React.createContext();
 
 export const AuditProvider = ({ ...props }) => {
   const [auditURL, setAuditURL] = useState(null);
+  const [auditData, setAuditData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
+  const fetchAuditData = async () => {
     setLoading(true);
-    setTimeout(() => [setLoading(false)], 1000);
-  }, [auditURL]);
+    setSubmitted(true);
+    const res = await fetch(`/api/audit?url=${auditURL}`);
+    const data = await res.json();
+    setAuditData(data);
+    setLoading(false);
+  };
 
-  if (!auditURL) {
-    return <EntryPoint setAuditURL={setAuditURL} />;
+  const reset = () => {
+    setAuditURL(null);
+    setAuditData(null);
+    setSubmitted(false);
+  }
+
+  if (!submitted) {
+    return (
+      <EntryPoint setAuditURL={setAuditURL} fetchAuditData={fetchAuditData} />
+    );
   }
 
   return (
-    <AuditContext.Provider value={{ auditURL, setAuditURL }}>
+    <AuditContext.Provider value={{ auditURL, setAuditURL, reset, auditData }}>
       {loading ? <LoadingSpinner /> : props.children}
     </AuditContext.Provider>
   );
