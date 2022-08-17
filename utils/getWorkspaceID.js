@@ -1,9 +1,8 @@
 import { database } from "./intialiseFirebase";
 import initMondayClient from "monday-sdk-js";
+import { createAuditBoards } from "./monday-service";
 
-const isActiveWorkspace = async (token, workspaceId) => {
-  const mondayClient = initMondayClient();
-  mondayClient.setToken(token);
+const isActiveWorkspace = async (mondayClient, workspaceId) => {
   const boardCreationQuery = `query {
         boards {
           workspace_id
@@ -17,22 +16,21 @@ const isActiveWorkspace = async (token, workspaceId) => {
   return workspaces.has(workspaceId);
 };
 
-export const getWorkspaceID = async (token, uid) => {
+export const getWorkspaceID = async (mondayClient) => {
+  const uid = mondayClient.userId + "";
   const db = database();
   const doc = await db.collection("users").doc(uid).get();
 
   if (doc.exists) {
     const data = doc.data();
     const workspaceID = data.workspaceID;
-    const isActive = await isActiveWorkspace(token, workspaceID);
+    const isActive = await isActiveWorkspace(mondayClient, workspaceID);
     if (isActive) {
       console.log(`✅ Found workspaceID ${workspaceID} for user ${uid}`);
-      return workspaceID;
+      return data;
     }
   }
   try {
-    const mondayClient = initMondayClient();
-    mondayClient.setToken(token);
     const workspaceCreationQuery = `
         mutation {
           create_workspace (name:"Eathbound.site Audits", kind: open, description: "🌳 Use these audit boards to understand the carbon impact of your webpages and learn how you can improve them. Audit collection created by Earthbound.site") {
@@ -42,14 +40,18 @@ export const getWorkspaceID = async (token, uid) => {
     const workspaceCreationResponse = await mondayClient.api(
       workspaceCreationQuery
     );
-    console.log(workspaceCreationResponse);
     const newWorkSpaceID = workspaceCreationResponse.data.create_workspace.id;
-
-    await db.collection("users").doc(uid).set({
+    const boards = await createAuditBoards(
+      mondayClient,
+      newWorkSpaceID
+    );
+    const data = {
       workspaceID: newWorkSpaceID,
-    });
+      boards,
+    };
+    await db.collection("users").doc(uid).set(data);
     console.log(`✅ Created workspace ${newWorkSpaceID} for user ${uid}`);
-    return newWorkSpaceID;
+    return data;
   } catch (err) {
     console.error(err);
   }
