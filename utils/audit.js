@@ -1,16 +1,32 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import greenFoundation from "./greenFoundation";
 
-import conductAudit from "../../utils/audit";
-import greenFoundation from "../../utils/greenFoundation";
+const APIKEY = process.env.GOOGLEPAGESPEED_APIKEY;
 
 Number.prototype.toFixedNumber = function(digits, base){
-    var pow = Math.pow(base||10, digits);
-    return Math.round(this*pow) / pow;
+  var pow = Math.pow(base||10, digits);
+  return Math.round(this*pow) / pow;
+}
+
+
+const addProtocolIfMissing = (url) => {
+  if (!url.startsWith("http")) {
+    return `https://${url}`;
   }
+  return url;
+};
 
-export default async function handler(req, res) {
+const conductAudit = async (url) => {
+  const response = await fetch(
+    `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${addProtocolIfMissing(
+      url
+    )}&key=${APIKEY}`
+  );
+  const data = await response.json();
+  return data;
+};
 
-  const results = await Promise.all([conductAudit(req.query.url), greenFoundation(req.query.url)]);
+const audit = async (auditURL) => {
+  const results = await Promise.all([conductAudit(auditURL), greenFoundation(auditURL)]);
   const {
     lighthouseResult: {
       audits,
@@ -41,5 +57,7 @@ export default async function handler(req, res) {
     potentialImageSavings,
     fullAudit: audits,
   };
-  res.status(200).json(payload);
+  return payload;
 }
+
+export default audit;

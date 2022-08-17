@@ -20,7 +20,7 @@ const LoadingSpinner = () => {
           <Loader />
         </div>
         <h3 className="text-xl">Gathering insights on <span className="text-blue-600">{auditURL}</span></h3>
-        <Label kind="line" isLegIncluded={false} className="rounded-l" text="✌️ Stick with us, this can take a minute or two...."/>
+        <Label kind="line" isLegIncluded={false} className="rounded-l" text="✌️ Stick with us, this can take up to 30 seconds...."/>
       </div>
     </Layout>
   );
