@@ -8,14 +8,14 @@ const jwt = require("jsonwebtoken");
 
 export default async function handler(req, res) {
   const { authorization } = req.headers;
-  const { shortLivedToken, userId, accountId } = jwt.verify(
+  const { shortLivedToken, accountId } = jwt.verify(
     authorization,
     process.env.MONDAY_SIGNING_SECRET
   );
 
   const { payload } = req.body;
   const {
-    inputFields: { columnValue },
+    inputFields: { columnValue, userId },
   } = payload;
 
   if (columnValue) {
