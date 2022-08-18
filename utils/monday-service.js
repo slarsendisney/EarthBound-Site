@@ -70,7 +70,7 @@ export const addAuditToBoard = async (
   const time = audit.auditTimestamp.split("T")[1].split(".")[0];
   console.log({hosting: audit.hosting});
   let scores = [
-    audit.hosting.green,
+    audit.hosting.green === true,
     audit.pagePerformance > 0.69,
     audit.pageWeight < 2.5,
   ];
