@@ -49,7 +49,7 @@ export const getWorkspaceID = async (mondayClient) => {
       workspaceID: newWorkSpaceID,
       boards,
     };
-    await db.collection("accounts").doc(uid).set(data);
+    const result = await db.collection("accounts").doc(uid).set(data);
 
     return data;
   } catch (err) {

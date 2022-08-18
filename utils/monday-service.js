@@ -208,7 +208,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
     }`;
     const populateResponse = await mondayClient.api(PopulateQuery);
     console.log(populateResponse);
-    await fireNotification(
+    const notification = await fireNotification(
       mondayClient,
       auditBoard,
       "You triggered your first audit! Congrats! We have gone ahead and created the Earthbound.Site Workspace & Boards, visit the audit board now to see your audit results!"
