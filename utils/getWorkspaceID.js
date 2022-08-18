@@ -1,5 +1,4 @@
 import { database } from "./intialiseFirebase";
-import initMondayClient from "monday-sdk-js";
 import { createAuditBoards } from "./monday-service";
 
 const isActiveWorkspace = async (mondayClient, workspaceId) => {
@@ -17,16 +16,16 @@ const isActiveWorkspace = async (mondayClient, workspaceId) => {
 };
 
 export const getWorkspaceID = async (mondayClient) => {
-  const uid = mondayClient.userId + "";
+  const uid = mondayClient.accountId + "";
   const db = database();
-  const doc = await db.collection("users").doc(uid).get();
+  const doc = await db.collection("accounts").doc(uid).get();
 
   if (doc.exists) {
     const data = doc.data();
     const workspaceID = data.workspaceID;
     const isActive = await isActiveWorkspace(mondayClient, workspaceID);
     if (isActive) {
-      console.log(`✅ Found workspaceID ${workspaceID} for user ${uid}`);
+      console.log(`✅ Found workspaceID ${workspaceID} for account ${uid}`);
       return data;
     }
   }
@@ -41,6 +40,7 @@ export const getWorkspaceID = async (mondayClient) => {
       workspaceCreationQuery
     );
     const newWorkSpaceID = workspaceCreationResponse.data.create_workspace.id;
+    console.log(`✅ Created workspace ${newWorkSpaceID} for account ${uid}`);
     const boards = await createAuditBoards(
       mondayClient,
       newWorkSpaceID
@@ -49,8 +49,8 @@ export const getWorkspaceID = async (mondayClient) => {
       workspaceID: newWorkSpaceID,
       boards,
     };
-    await db.collection("users").doc(uid).set(data);
-    console.log(`✅ Created workspace ${newWorkSpaceID} for user ${uid}`);
+    await db.collection("accounts").doc(uid).set(data);
+
     return data;
   } catch (err) {
     console.error(err);
