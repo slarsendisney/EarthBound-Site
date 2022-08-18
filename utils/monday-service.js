@@ -108,7 +108,7 @@ export const addAuditToBoard = async (
     .join(", ");
 
   const addAuditQuery = `mutation add_audit{
-    create_item (board_id: ${boardId}, group_id: "${auditsGroupID}", item_name: "${url}") {
+    create_item (board_id: ${boardId}, group_id: "${auditsGroupID}", item_name: "${url.replace(/(^\w+:|^)\/\//, '')}") {
         id
     }
   }`;
