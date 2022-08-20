@@ -59,9 +59,10 @@ export const getWorkspaceID = async (mondayClient, url) => {
 
     const itemId = await setUpItem(
       mondayClient,
-      parseInt(boards.audits.id),
-      boards.audits.groups.recent_audits_group.id,
-      boards.audits.columns,
+      parseInt(data.boards.audits.id),
+      data.boards.audits.groups.recent_audits_group.id,
+      data.boards.audits.groups.outdated_audits_group.id,
+      data.boards.audits.columns,
       url
     );
 
