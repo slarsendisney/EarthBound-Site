@@ -158,7 +158,7 @@ export const addAuditToBoard = async (
         ? `${actionItems
             .map(
               (action, i) => `
-          action_item_${i}: create_subitem (parent_item_id: ${itemId}, item_name: "${action}") {
+          action_item_${i}: create_subitem (parent_item_id: ${itemId}, create_labels_if_missing: true, item_name: "${action}") {
             id
             board {
                 id
