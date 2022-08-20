@@ -8,6 +8,7 @@ import DialogContentContainer from "monday-ui-react-core/dist/DialogContentConta
 import BetaMessage from "./EntryPoint/BetaMessage";
 import TreeOne from "./Assets/TreeOne";
 import { GlobeIcon } from "@heroicons/react/outline";
+import Logo from "./Generic/Logo";
 
 const EntryPoint = ({ setAuditURL, fetchAuditData }) => {
   const [value, setValue] = useState("sld.codes");
@@ -29,7 +30,7 @@ const EntryPoint = ({ setAuditURL, fetchAuditData }) => {
     <Layout>
       <div className="flex flex-col space-y-4 items-center justify-center my-auto h-full pt-6 md:pt-16 lg:pt-24 ">
         <div className="flex space-x-1 text-green-800 text-lg font bold items-center">
-          <GlobeIcon className="w-5" />
+          <Logo className="w-5" />
           <p>EarthBound.Site</p>
         </div>
         <DialogContentContainer className="max-w-2xl w-full p-0">
@@ -39,7 +40,7 @@ const EntryPoint = ({ setAuditURL, fetchAuditData }) => {
                 A <span className="text-green-700">greener</span> web starts
                 here.
               </h2>
-              <TreeOne className="absolute bottom-0 right-0 h-[60%] m-5 md:h-[40%]" />
+              <Logo className="text-green-600 absolute bottom-0 right-0 h-[60%] m-5 md:h-[40%]" />
             </div>
             <div className="p-6 w-full flex flex-col justify-center">
               {toastOpen ? (

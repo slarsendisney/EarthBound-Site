@@ -18,6 +18,8 @@ export default async function handler(req, res) {
     inputFields: { columnValue, userId },
   } = payload;
 
+  res.status(200).send("OK");
+
   if (columnValue) {
     const url = columnValue.value;
     if (isValidUrl(url)) {
@@ -42,12 +44,6 @@ export default async function handler(req, res) {
           url
         );
       }
-  
-      res.status(200).send("OK");
-    } else {
-      res.status(200).send("OK");
     }
-  } else {
-    res.status(200).send("OK");
   }
 }

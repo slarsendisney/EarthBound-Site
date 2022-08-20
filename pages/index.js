@@ -1,10 +1,10 @@
 import Layout from "../components/Layout";
-import Audit from "../components/AuditReport/Audit";
+import Hero from "../components/Hero/Hero";
 
 export default function Home() {
   return (
-      <Layout>
-        <Audit />
-      </Layout>
+    <div className="landing-content">
+      <Hero />
+    </div>
   );
 }
