@@ -230,7 +230,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <div className="wrap test-site-text" id="main-content">
+      <div className="wrap test-site-text -mt-0.5" id="main-content">
         <Preview />
         <StartToday />
         <Footer />
