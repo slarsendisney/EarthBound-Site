@@ -219,7 +219,7 @@ const Hero = () => {
         </div>
 
         {/* <!-- landscape layer 10 - empty --> */}
-        <div className="landscape__layer" style={{ "--offset": 0 }}>
+        <div className="landscape__layer " style={{ "--offset": 0 }}>
           <div className="landscape__image">
             <svg viewBox="0 0 4000 1000" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -230,7 +230,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <div className="wrap test-site-text -mt-0.5" id="main-content">
+      <div className="wrap test-site-text mx-auto -mt-0.5" id="main-content">
         <Preview />
         <StartToday />
         <Footer />
