@@ -104,7 +104,9 @@ export const addAuditToBoard = async (
   columns,
   audit,
   url,
-  itemId
+  itemId,
+  taskBoardId,
+  taskGroups
 ) => {
   const date = audit.auditTimestamp.split("T")[0];
   const time = audit.auditTimestamp.split("T")[1].split(".")[0];
@@ -115,6 +117,13 @@ export const addAuditToBoard = async (
     audit.pageWeight < 2.5,
     (audit.carbonWithCache / audit.carbon) > 0.3
   ];
+ 
+  let taskGroupIds = [
+    taskGroups.tasks_green_hosting_group,
+    taskGroups.tasks_performance_group,
+    taskGroups.tasks_page_weight_group,
+    taskGroups.tasks_caching_group,
+  ]
   let scoreTasks = [
     "Switch to Green Hosting",
     "Improve Page Performance",
@@ -128,16 +137,24 @@ export const addAuditToBoard = async (
     "increasing the amount of cached resources will reduce the amount of data that you will need to send to a client on a repeat visit.",
   ];
 
-  const actionItems = [];
   const updateItems = [];
-  scores.map(
-    (item, index) => {
-      if(item !== true){
-        actionItems.push(scoreTasks[index])
-        updateItems.push(`<li><b><a href=\\\"/boards/boardId/pulses/itemId\\\">${scoreTasks[index]}</a></b>: ${scoreDesc[index]} </li>`)
-      } 
-    }
-  );
+  for await (const [index, item] of scores.entries()) {
+    if(item !== true){
+      const addAuditQuery = `mutation {
+        create_item (board_id: ${taskBoardId}, group_id: "${taskGroupIds[index].id}", item_name: "${url.replace(
+        /(^\w+:|^)\/\//,
+        ""
+      )}") {
+            id
+        }
+      }`;
+      const groupItem = await mondayClient.api(addAuditQuery);
+      console.log(groupItem)
+      const itemId = groupItem.data.create_item.id;
+      updateItems.push(`<li><b><a href=\\\"/boards/${taskBoardId}/pulses/${itemId}\\\">${scoreTasks[index]}</a></b>: ${scoreDesc[index]} </li>`)
+    } 
+  }
+
 
   const score = scores.filter((item) => item === true).length + 1;
 
@@ -172,24 +189,6 @@ export const addAuditToBoard = async (
       id
     }
   }`;
-  /*
-    ${
-      actionItems.length > 0
-        ? `${actionItems
-            .map(
-              (action, i) => `
-          action_item_${i}: create_subitem (parent_item_id: ${itemId}, item_name: "${action}") {
-            id
-            board {
-                id
-            }
-          }
-    `
-            )
-            .join("")}`
-        : ""
-    }
-  */
   const popResponse = await mondayClient.api(addPopulateAudit);
   console.log(popResponse);
   console.log(`✅ Added audit ${url}`);
@@ -273,6 +272,18 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       tasks_caching_group: create_group (board_id: ${tasksBoard}, group_name: "Increase Cached Resources") {
         id
       }
+      task_owner: create_column(board_id: ${tasksBoard}, title:"Owner", description: "The person who will own the task", column_type:people) {
+        id
+        type
+      }
+      task_status: create_column(board_id: ${tasksBoard}, title:"Status", description: "The progress to task completion", column_type:status) {
+        id
+        type
+      }
+      task_date: create_column(board_id: ${tasksBoard}, title:"Start Date", description: "Task start date", column_type:date) {
+        id
+        type
+      }
       audits_deletion_legacy_group: delete_group (board_id: ${auditBoard}, group_id: "topics") {
         id
         deleted
@@ -287,7 +298,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
     const notification = await fireNotification(
       mondayClient,
       auditBoard,
-      "You triggered your first audit! Congrats! We have gone ahead and created the Earthbound.Site Workspace & Boards, visit the audit board now to see your audit results!"
+      "You triggered your first audit! Congrats! We have gone ahead and created the Earthbound Workspace & Boards, visit the audit board now to see your audit results!"
     );
     const {
       audit_date,

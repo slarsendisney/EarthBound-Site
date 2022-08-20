@@ -38,7 +38,9 @@ export default async function handler(req, res) {
           mondayData.boards.audits.columns,
           auditReport,
           url,
-          mondayData.itemId
+          mondayData.itemId,
+          parseInt(mondayData.boards.tasks.id),
+          mondayData.boards.tasks.groups
         );
       }
     }
