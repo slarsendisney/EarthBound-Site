@@ -14,13 +14,13 @@ export const fireNotification = async (mondayClient, target, message) => {
   }
 };
 
-export const setUpItem = async ({
+export const setUpItem = async (
   mondayClient,
   boardId,
   auditsGroupID,
   columns,
   url,
-}) => {
+) => {
   console.log({
     mondayClient,
     boardId,
