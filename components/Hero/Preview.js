@@ -19,7 +19,7 @@ const Preview = () => (
       <Image alt="" src={require("./Card.png")} />
     </div>
     <p className="mt-4 max-w-3xl mx-auto text-center text-xl ">
-        The <span className="font-earth text-2xl">EarthBound</span> monday.com integration is a simple way to get an overview of your website's carbon footprint. It includes:
+        The <span className="font-earth text-2xl">EarthBound</span> monday.com integration is a simple way to get an overview of your website&apos;s carbon footprint. It includes:
       </p>
     <FAQs />
     <Image alt="" src={require("./heroImg.png")} className="w-full" />

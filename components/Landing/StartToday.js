@@ -11,7 +11,7 @@ export default function StartToday() {
               <span className="block font-earth text-4xl md:text-5xl text-accent-text">Start your first audit now.</span>
             </h2>
             <p className="mt-4 text-lg leading-6">
-              Add <span className="font-earth text-2xl">EarthBound</span>'s integration to your monday.com board today and we'll do the rest. 
+              Add <span className="font-earth text-2xl">EarthBound</span>&apos;s integration to your monday.com board today and we&apos;ll do the rest. 
             </p>
             <div className="w-56 mt-8">
               <AddToMondayButton />
