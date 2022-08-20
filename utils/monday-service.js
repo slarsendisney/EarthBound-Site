@@ -168,7 +168,7 @@ export const addAuditToBoard = async (
     change_multiple_column_values(item_id: ${itemId}, board_id: ${boardId}, column_values: "{${columnValues}}") {
       id
     }
-    create_update (item_id: ${itemId}, body: "Suggested Tasks: \n <ul>${updateItems.join('\n')}</ul>") {
+    create_update (item_id: ${itemId}, body: "EarthBound's suggested improvements: \n <ul>${updateItems.join('')}</ul>") {
       id
     }
   }`;
