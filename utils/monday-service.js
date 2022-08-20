@@ -53,22 +53,6 @@ export const setUpItem = async (
       change_multiple_column_values(item_id: ${itemId}, board_id: ${boardId}, column_values: "{${columnValues}}") {
         id
       }
-      ${
-        actionItems.length > 0
-          ? `${actionItems
-              .map(
-                (action, i) => `
-            action_item_${i}: create_subitem (parent_item_id: ${itemId}, item_name: "${action}") {
-              id
-              board {
-                  id
-              }
-            }
-      `
-              )
-              .join("")}`
-          : ""
-      }
     }`;
   const popResponse = await mondayClient.api(addPopulateAudit);
   console.log(`✅ Added item ${itemId} to audit board`);
