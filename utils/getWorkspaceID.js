@@ -55,8 +55,8 @@ export const getWorkspaceID = async (mondayClient, url) => {
       workspaceID: newWorkSpaceID,
       boards,
     };
+    console.log(data)
     const result = await db.collection("accounts").doc(uid).set(data);
-
     const itemId = await setUpItem(
       mondayClient,
       parseInt(data.boards.audits.id),
