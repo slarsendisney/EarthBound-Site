@@ -193,6 +193,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
     }`;
 
     const response = await mondayClient.api(boardCreationQuery);
+    console.log(response);
     const boards = response.data;
     const auditBoard = parseInt(boards.audits.id);
     const tasksBoard = parseInt(boards.tasks.id);
