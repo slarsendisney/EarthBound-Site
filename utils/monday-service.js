@@ -169,11 +169,8 @@ export const addAuditToBoard = async (
         : ""
     }
   }`;
-
-  // console.log(addPopulateAudit);
-
   const popResponse = await mondayClient.api(addPopulateAudit);
-  // console.log(popResponse);
+  console.log(popResponse);
   console.log(`✅ Added audit ${url}`);
 };
 
