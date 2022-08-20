@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       mondayClient.accountId = accountId;
 
       const [mondayData, auditReport] = await Promise.all([
-        getWorkspaceID(mondayClient),
+        getWorkspaceID(mondayClient, url),
         audit(url),
       ]);
       if(auditReport){
@@ -41,7 +41,8 @@ export default async function handler(req, res) {
           mondayData.boards.audits.groups.outdated_audits_group.id,
           mondayData.boards.audits.columns,
           auditReport,
-          url
+          url,
+          mondayData.itemId
         );
       }
     }

@@ -14,6 +14,61 @@ export const fireNotification = async (mondayClient, target, message) => {
   }
 };
 
+export const setUpItem = async ({
+  mondayClient,
+  boardId,
+  auditsGroupID,
+  columns,
+  url,
+}) => {
+  const addAuditQuery = `mutation add_audit{
+    create_item (board_id: ${boardId}, group_id: "${auditsGroupID}", item_name: "${url.replace(
+    /(^\w+:|^)\/\//,
+    ""
+  )}") {
+        id
+    }
+  }`;
+  const response = await mondayClient.api(addAuditQuery);
+
+  const itemId = response.data.create_item.id;
+
+  const columnData = {
+    [columns.audit_progress]: `{\\\"index\\\" : 0}`,
+  };
+  const columnValues = Object.keys(columnData)
+    .map((key) => {
+      return `\\\"${key}\\\" : ${columnData[key]}`;
+    })
+    .join(", ");
+
+  const addPopulateAudit = `mutation populate_audit{
+      change_multiple_column_values(item_id: ${itemId}, board_id: ${boardId}, column_values: "{${columnValues}}") {
+        id
+      }
+      ${
+        actionItems.length > 0
+          ? `${actionItems
+              .map(
+                (action, i) => `
+            action_item_${i}: create_subitem (parent_item_id: ${itemId}, item_name: "${action}") {
+              id
+              board {
+                  id
+              }
+            }
+      `
+              )
+              .join("")}`
+          : ""
+      }
+    }`;
+  const popResponse = await mondayClient.api(addPopulateAudit);
+  console.log(`✅ Added item ${itemId} to audit board`);
+
+  return itemId;
+};
+
 export const outdateAudit = async (
   mondayClient,
   boardId,
@@ -57,7 +112,8 @@ export const addAuditToBoard = async (
   outdatedGroupID,
   columns,
   audit,
-  url
+  url,
+  itemId
 ) => {
   await outdateAudit(
     mondayClient,
@@ -68,7 +124,7 @@ export const addAuditToBoard = async (
   );
   const date = audit.auditTimestamp.split("T")[0];
   const time = audit.auditTimestamp.split("T")[1].split(".")[0];
-  console.log({hosting: audit.hosting});
+  console.log({ hosting: audit.hosting });
   let scores = [
     audit.hosting.green === true,
     audit.pagePerformance > 0.69,
@@ -89,6 +145,7 @@ export const addAuditToBoard = async (
   const columnData = {
     [columns.audit_trigger
       .id]: `{\\\"personsAndTeams\\\":[{\\\"id\\\":${mondayClient.userId},\\\"kind\\\":\\\"person\\\"}]}`,
+
     [columns.audit_status.id]: `{\\\"rating\\\" : ${score}}`,
     [columns.audit_performance.id]: `\\\"${Math.floor(
       audit.pagePerformance * 100
@@ -100,21 +157,13 @@ export const addAuditToBoard = async (
       .id]: `{\\\"date\\\" : \\\"${date}\\\", \\\"time\\\" : \\\"${time}\\\"}`,
     [columns.audit_hosting
       .id]: `{\\\"checked\\\" : \\\"${audit.hosting.green}\\\"}`,
+    [columns.audit_progress]: `{\\\"index\\\" : 1}`,
   };
   const columnValues = Object.keys(columnData)
     .map((key) => {
       return `\\\"${key}\\\" : ${columnData[key]}`;
     })
     .join(", ");
-
-  const addAuditQuery = `mutation add_audit{
-    create_item (board_id: ${boardId}, group_id: "${auditsGroupID}", item_name: "${url.replace(/(^\w+:|^)\/\//, '')}") {
-        id
-    }
-  }`;
-  const response = await mondayClient.api(addAuditQuery);
-  // console.log(response);
-  const itemId = response.data.create_item.id;
 
   const addPopulateAudit = `mutation populate_audit{
     change_multiple_column_values(item_id: ${itemId}, board_id: ${boardId}, column_values: "{${columnValues}}") {
@@ -172,6 +221,10 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
         id
         type
       }
+      audit_progress: create_column(board_id: ${auditBoard}, title:"Audit Status", description: "Whether the audit is in progress.", column_type:status) {
+        id
+        type
+      }
       audit_status: create_column(board_id: ${auditBoard}, title:"Audit Score", description: "Audit's overall green score", column_type:rating) {
         id
         type
@@ -225,6 +278,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       audit_performance,
       outdated_audits_group,
       recent_audits_group,
+      audit_progress,
     } = populateResponse.data;
 
     boards.audits.columns = {
@@ -236,6 +290,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       audit_hosting,
       audit_weight,
       audit_performance,
+      audit_progress,
     };
     boards.audits.groups = {
       outdated_audits_group,

@@ -1,5 +1,5 @@
 import { database } from "./intialiseFirebase";
-import { createAuditBoards } from "./monday-service";
+import { createAuditBoards, setUpItem } from "./monday-service";
 
 const isActiveWorkspace = async (mondayClient, workspaceId) => {
   const boardCreationQuery = `query {
@@ -15,7 +15,7 @@ const isActiveWorkspace = async (mondayClient, workspaceId) => {
   return workspaces.has(workspaceId);
 };
 
-export const getWorkspaceID = async (mondayClient) => {
+export const getWorkspaceID = async (mondayClient, url) => {
   const uid = mondayClient.accountId + "";
   const db = database();
   const doc = await db.collection("accounts").doc(uid).get();
@@ -26,7 +26,15 @@ export const getWorkspaceID = async (mondayClient) => {
     const isActive = await isActiveWorkspace(mondayClient, workspaceID);
     if (isActive) {
       console.log(`✅ Found workspaceID ${workspaceID} for account ${uid}`);
-      return data;
+      const itemId = await setUpItem(
+        mondayClient,
+        parseInt(data.boards.audits.id),
+        data.boards.audits.groups.recent_audits_group.id,
+        data.boards.audits.columns,
+        url
+      );
+
+      return { ...data, itemId };
     }
   }
   try {
@@ -41,17 +49,22 @@ export const getWorkspaceID = async (mondayClient) => {
     );
     const newWorkSpaceID = workspaceCreationResponse.data.create_workspace.id;
     console.log(`✅ Created workspace ${newWorkSpaceID} for account ${uid}`);
-    const boards = await createAuditBoards(
-      mondayClient,
-      newWorkSpaceID
-    );
+    const boards = await createAuditBoards(mondayClient, newWorkSpaceID);
     const data = {
       workspaceID: newWorkSpaceID,
       boards,
     };
     const result = await db.collection("accounts").doc(uid).set(data);
 
-    return data;
+    const itemId = await setUpItem(
+      mondayClient,
+      parseInt(boards.audits.id),
+      boards.audits.groups.recent_audits_group.id,
+      boards.audits.columns,
+      url
+    );
+
+    return { ...data, itemId };
   } catch (err) {
     console.error(err);
   }
