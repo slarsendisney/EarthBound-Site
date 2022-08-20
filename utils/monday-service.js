@@ -21,6 +21,13 @@ export const setUpItem = async ({
   columns,
   url,
 }) => {
+  console.log({
+    mondayClient,
+    boardId,
+    auditsGroupID,
+    columns,
+    url,
+  })
   const addAuditQuery = `mutation add_audit{
     create_item (board_id: ${boardId}, group_id: "${auditsGroupID}", item_name: "${url.replace(
     /(^\w+:|^)\/\//,
