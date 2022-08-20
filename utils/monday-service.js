@@ -185,7 +185,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       )}) {
         id
       }
-      quickWins: create_board(board_name: "✌️ Quick Wins", board_kind: public, workspace_id: ${parseInt(
+      tasks: create_board(board_name: "🔧 Suggested Tasks", board_kind: public, workspace_id: ${parseInt(
         workspaceID
       )}) {
         id
@@ -195,6 +195,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
     const response = await mondayClient.api(boardCreationQuery);
     const boards = response.data;
     const auditBoard = parseInt(boards.audits.id);
+    const tasksBoard = parseInt(boards.tasks.id);
     const PopulateQuery = `mutation {
       audit_date: create_column(board_id: ${auditBoard}, title:"Date", description: "The date that the audit was triggered", column_type:date) {
         id
@@ -238,10 +239,21 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       recent_audits_group: create_group (board_id: ${auditBoard}, group_name: "Recent Audits") {
         id
       }
-      delete_group (board_id: ${auditBoard}, group_id: "topics") {
+      outdated_audits_group: create_group (board_id: ${auditBoard}, group_name: "Outdated Audits") {
+        id
+      }
+      tasks_group: create_group (board_id: ${auditBoard}, group_name: "Tasks") {
+        id
+      }
+      audits_deletion_legacy_group: delete_group (board_id: ${auditBoard}, group_id: "topics") {
         id
         deleted
-    }
+      }
+      tasks_deletion_legacy_group: delete_group (board_id: ${tasksBoard}, group_id: "topics") {
+        id
+        deleted
+      }
+
     }`;
     const populateResponse = await mondayClient.api(PopulateQuery);
     console.log(populateResponse);

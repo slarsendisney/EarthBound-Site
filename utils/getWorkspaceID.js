@@ -41,7 +41,7 @@ export const getWorkspaceID = async (mondayClient, url) => {
   try {
     const workspaceCreationQuery = `
         mutation {
-          create_workspace (name:"Eathbound.site Audits", kind: open, description: "🌳 Use these audit boards to understand the carbon impact of your webpages and learn how you can improve them. Audit collection created by Earthbound.site") {
+          create_workspace (name:"Eathbound Audits", kind: open, description: "🌳 Use these audit boards to understand the carbon impact of your webpages and learn how you can improve them. Audit collection created by Earthbound.site") {
             id
           }
         }`;
