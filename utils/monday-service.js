@@ -134,7 +134,7 @@ export const addAuditToBoard = async (
     (item, index) => {
       if(item !== true){
         actionItems.push(scoreTasks[index])
-        updateItems.push(`<li><b><a href="/boards/boardId/pulses/itemId">${scoreTasks[index]}</a></b>: ${scoreDesc[index]} </li>`)
+        updateItems.push(`<li><b><a href=\\\"/boards/boardId/pulses/itemId\\\">${scoreTasks[index]}</a></b>: ${scoreDesc[index]} </li>`)
       } 
     }
   );
