@@ -42,7 +42,7 @@ export const setUpItem = async (
   const itemId = response.data.create_item.id;
 
   const columnData = {
-    [columns.audit_progress]: `{\\\"index\\\" : 0}`,
+    [columns.audit_progress.id]: `{\\\"index\\\" : 0}`,
   };
   const columnValues = Object.keys(columnData)
     .map((key) => {
