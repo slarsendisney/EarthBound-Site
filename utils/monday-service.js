@@ -20,7 +20,7 @@ export const setUpItem = async (
   auditsGroupID,
   outdatedGroupID,
   columns,
-  url,
+  url
 ) => {
   await outdateAudit(
     mondayClient,
@@ -55,6 +55,7 @@ export const setUpItem = async (
         id
       }
     }`;
+  console.log(addPopulateAudit);
   const popResponse = await mondayClient.api(addPopulateAudit);
   console.log(`✅ Added item ${itemId} to audit board`);
 
@@ -140,7 +141,7 @@ export const addAuditToBoard = async (
       .id]: `{\\\"date\\\" : \\\"${date}\\\", \\\"time\\\" : \\\"${time}\\\"}`,
     [columns.audit_hosting
       .id]: `{\\\"checked\\\" : \\\"${audit.hosting.green}\\\"}`,
-    [columns.audit_progress]: `{\\\"index\\\" : 1}`,
+    [columns.audit_progress.id]: `{\\\"index\\\" : 1}`,
   };
   const columnValues = Object.keys(columnData)
     .map((key) => {
