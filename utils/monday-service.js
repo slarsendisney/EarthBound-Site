@@ -113,18 +113,20 @@ export const addAuditToBoard = async (
     audit.hosting.green === true,
     audit.pagePerformance > 0.69,
     audit.pageWeight < 2.5,
+    (audit.carbonWithCache / audit.carbon) > 0.3
   ];
   let scoreTasks = [
     "Switch to Green Hosting",
-    "Investigate Page Performance",
+    "Improve Page Performance",
     "Reduce Page Weight",
+    "Increase Cached Resources",
   ];
   const actionItems = [];
   scores.map(
     (item, index) => item !== true && actionItems.push(scoreTasks[index])
   );
 
-  const score = scores.filter((item) => item === true).length;
+  const score = scores.filter((item) => item === true).length + 1;
 
   const columnData = {
     [columns.audit_trigger
