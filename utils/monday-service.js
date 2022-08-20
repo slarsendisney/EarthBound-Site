@@ -261,7 +261,16 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       outdated_audits_group: create_group (board_id: ${auditBoard}, group_name: "Outdated Audits") {
         id
       }
-      tasks_group: create_group (board_id: ${tasksBoard}, group_name: "Tasks") {
+      tasks_green_hosting_group: create_group (board_id: ${tasksBoard}, group_name: "Switch to Green Hosting") {
+        id
+      }
+      tasks_performance_group: create_group (board_id: ${tasksBoard}, group_name: "Improve Page Performance") {
+        id
+      }
+      tasks_page_weight_group: create_group (board_id: ${tasksBoard}, group_name: "Reduce Page Weight") {
+        id
+      }
+      tasks_caching_group: create_group (board_id: ${tasksBoard}, group_name: "Increase Cached Resources") {
         id
       }
       audits_deletion_legacy_group: delete_group (board_id: ${auditBoard}, group_id: "topics") {
@@ -272,7 +281,6 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
         id
         deleted
       }
-
     }`;
     const populateResponse = await mondayClient.api(PopulateQuery);
     console.log(populateResponse);
@@ -293,6 +301,10 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       outdated_audits_group,
       recent_audits_group,
       audit_progress,
+      tasks_green_hosting_group,
+      tasks_performance_group,
+      tasks_page_weight_group,
+      tasks_caching_group,
     } = populateResponse.data;
 
     boards.audits.columns = {
@@ -306,6 +318,12 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       audit_performance,
       audit_progress,
     };
+    boards.tasks.groups = {
+      tasks_green_hosting_group,
+      tasks_performance_group,
+      tasks_page_weight_group,
+      tasks_caching_group,
+    }
     boards.audits.groups = {
       outdated_audits_group,
       recent_audits_group,
