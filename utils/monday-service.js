@@ -155,6 +155,8 @@ export const addAuditToBoard = async (
     change_multiple_column_values(item_id: ${itemId}, board_id: ${boardId}, column_values: "{${columnValues}}") {
       id
     }
+  }`;
+  /*
     ${
       actionItems.length > 0
         ? `${actionItems
@@ -171,7 +173,7 @@ export const addAuditToBoard = async (
             .join("")}`
         : ""
     }
-  }`;
+  */
   const popResponse = await mondayClient.api(addPopulateAudit);
   console.log(popResponse);
   console.log(`✅ Added audit ${url}`);
