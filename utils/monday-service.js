@@ -243,7 +243,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       outdated_audits_group: create_group (board_id: ${auditBoard}, group_name: "Outdated Audits") {
         id
       }
-      tasks_group: create_group (board_id: ${auditBoard}, group_name: "Tasks") {
+      tasks_group: create_group (board_id: ${tasksBoard}, group_name: "Tasks") {
         id
       }
       audits_deletion_legacy_group: delete_group (board_id: ${auditBoard}, group_id: "topics") {
