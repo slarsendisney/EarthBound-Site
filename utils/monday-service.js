@@ -115,7 +115,7 @@ export const addAuditToBoard = async (
     audit.hosting.green === true,
     audit.pagePerformance > 0.69,
     audit.pageWeight < 2.5,
-    (audit.carbonWithCache / audit.carbon) > 0.3
+    (audit.carbonWithCache / audit.carbon) < 0.3
   ];
  
   let taskGroupIds = [
