@@ -35,8 +35,6 @@ export default async function handler(req, res) {
         await addAuditToBoard(
           mondayClient,
           parseInt(mondayData.boards.audits.id),
-          mondayData.boards.audits.groups.recent_audits_group.id,
-          mondayData.boards.audits.groups.outdated_audits_group.id,
           mondayData.boards.audits.columns,
           auditReport,
           url,

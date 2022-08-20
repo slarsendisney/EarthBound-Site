@@ -30,6 +30,7 @@ export const getWorkspaceID = async (mondayClient, url) => {
         mondayClient,
         parseInt(data.boards.audits.id),
         data.boards.audits.groups.recent_audits_group.id,
+        data.boards.audits.groups.outdated_audits_group.id,
         data.boards.audits.columns,
         url
       );

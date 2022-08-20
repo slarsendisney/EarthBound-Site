@@ -18,16 +18,17 @@ export const setUpItem = async (
   mondayClient,
   boardId,
   auditsGroupID,
+  outdatedGroupID,
   columns,
   url,
 ) => {
-  console.log({
+  await outdateAudit(
     mondayClient,
     boardId,
     auditsGroupID,
-    columns,
-    url,
-  })
+    outdatedGroupID,
+    url
+  );
   const addAuditQuery = `mutation add_audit{
     create_item (board_id: ${boardId}, group_id: "${auditsGroupID}", item_name: "${url.replace(
     /(^\w+:|^)\/\//,
@@ -99,20 +100,11 @@ export const outdateAudit = async (
 export const addAuditToBoard = async (
   mondayClient,
   boardId,
-  auditsGroupID,
-  outdatedGroupID,
   columns,
   audit,
   url,
   itemId
 ) => {
-  await outdateAudit(
-    mondayClient,
-    boardId,
-    auditsGroupID,
-    outdatedGroupID,
-    url
-  );
   const date = audit.auditTimestamp.split("T")[0];
   const time = audit.auditTimestamp.split("T")[1].split(".")[0];
   console.log({ hosting: audit.hosting });
