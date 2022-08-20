@@ -121,9 +121,22 @@ export const addAuditToBoard = async (
     "Reduce Page Weight",
     "Increase Cached Resources",
   ];
+  let scoreDesc = [
+    "switching will reduce the amount of energy used by your server.",
+    "making your page more performant will reduce the amount of energy used by the client.",
+    "reducing the page weight will reduce the amount of energy required to send your webpage to the client.",
+    "increasing the amount of cached resources will reduce the amount of data that you will need to send to a client on a repeat visit.",
+  ];
+
   const actionItems = [];
+  const updateItems = [];
   scores.map(
-    (item, index) => item !== true && actionItems.push(scoreTasks[index])
+    (item, index) => {
+      if(item !== true){
+        actionItems.push(scoreTasks[index])
+        updateItems.push(`<li><b>${scoreTasks[index]}</b>: ${scoreDesc[index]} </li>`)
+      } 
+    }
   );
 
   const score = scores.filter((item) => item === true).length + 1;
@@ -153,6 +166,9 @@ export const addAuditToBoard = async (
 
   const addPopulateAudit = `mutation populate_audit{
     change_multiple_column_values(item_id: ${itemId}, board_id: ${boardId}, column_values: "{${columnValues}}") {
+      id
+    }
+    create_update (item_id: ${itemId}, body: "Suggested Tasks: \n <ul>${updateItems.join('\n')}</ul>") {
       id
     }
   }`;
