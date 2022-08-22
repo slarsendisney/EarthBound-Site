@@ -22,7 +22,6 @@ const Preview = () => (
         The <span className="font-earth text-2xl">EarthBound</span> monday.com integration is a simple way to get an overview of your website&apos;s carbon footprint. It includes:
       </p>
     <FAQs />
-    <Image alt="" src={require("./heroImg.png")} className="w-full" />
   </div>
 );
 
