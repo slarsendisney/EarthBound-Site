@@ -70,16 +70,16 @@ export const outdateAudit = async (
   url
 ) => {
   const findExsisting = `query {
-    boards (ids: ${parseInt(boardId)}) {
-        items {
-          id
-          name
-          group {
+      boards (ids: ${parseInt(boardId)}) {
+          items {
             id
+            name
+            group {
+              id
+            }
           }
-        }
-    }
-}`;
+      }
+  }`;
   const response = await mondayClient.api(findExsisting);
   const items = response.data.boards[0].items.filter(
     (item) => item.name === url && item.group.id === auditsGroupID
@@ -157,6 +157,7 @@ export const addAuditToBoard = async (
       const items = checkExistData.data.boards[0].groups[0].items.filter(
         (item) => item.name === itemName
       ).length;
+      console.log(items);
       if (items === 0) {
         const addAuditQuery = `mutation {
         create_item (board_id: ${taskBoardId}, group_id: "${taskGroupIds[index].id}", item_name: "${itemName}") {
