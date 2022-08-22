@@ -156,9 +156,9 @@ export const addAuditToBoard = async (
       const checkExistData = await mondayClient.api(checkExistQuery);
       const items = checkExistData.data.boards[0].groups[0].items.filter(
         (item) => item.name === itemName
-      ).length;
+      );
       console.log(items);
-      if (items === 0) {
+      if (items.length === 0) {
         const addAuditQuery = `mutation {
         create_item (board_id: ${taskBoardId}, group_id: "${taskGroupIds[index].id}", item_name: "${itemName}") {
             id
