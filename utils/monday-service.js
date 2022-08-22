@@ -115,15 +115,15 @@ export const addAuditToBoard = async (
     audit.hosting.green === true,
     audit.pagePerformance > 0.69,
     audit.pageWeight < 2.5,
-    (audit.carbonWithCache / audit.carbon) < 0.3
+    audit.carbonWithCache / audit.carbon < 0.3,
   ];
- 
+
   let taskGroupIds = [
     taskGroups.tasks_green_hosting_group,
     taskGroups.tasks_performance_group,
     taskGroups.tasks_page_weight_group,
     taskGroups.tasks_caching_group,
-  ]
+  ];
   let scoreTasks = [
     "Switch to Green Hosting",
     "Improve Page Performance",
@@ -139,22 +139,42 @@ export const addAuditToBoard = async (
 
   const updateItems = [];
   for await (const [index, item] of scores.entries()) {
-    if(item !== true){
-      const addAuditQuery = `mutation {
-        create_item (board_id: ${taskBoardId}, group_id: "${taskGroupIds[index].id}", item_name: "${url.replace(
-        /(^\w+:|^)\/\//,
-        ""
-      )}") {
+    if (item !== true) {
+      const itemName = url.replace(/(^\w+:|^)\/\//, "");
+      const checkExistQuery = `query {
+        boards(ids: ${taskBoardId}) {
+          id
+          groups(ids:"${taskGroupIds[index].id}") {
+            id
+            items{
+              name
+              id
+            }
+          }
+        }
+      }`;
+      const checkExistData = await mondayClient.api(checkExistQuery);
+      const items = checkExistData.data.boards[0].groups[0].items.filter(
+        (item) => item.name === itemName
+      ).length;
+      if (items === 0) {
+        const addAuditQuery = `mutation {
+        create_item (board_id: ${taskBoardId}, group_id: "${taskGroupIds[index].id}", item_name: "${itemName}") {
             id
         }
       }`;
-      const groupItem = await mondayClient.api(addAuditQuery);
-      console.log(groupItem)
-      const itemId = groupItem.data.create_item.id;
-      updateItems.push(`<li><b><a href=\\\"/boards/${taskBoardId}/pulses/${itemId}\\\">${scoreTasks[index]}</a></b>: ${scoreDesc[index]} </li>`)
-    } 
+        const groupItem = await mondayClient.api(addAuditQuery);
+        const itemId = groupItem.data.create_item.id;
+        updateItems.push(
+          `<li><b><a href=\\\"/boards/${taskBoardId}/pulses/${itemId}\\\">${scoreTasks[index]}</a></b>: ${scoreDesc[index]} </li>`
+        );
+      } else {
+        updateItems.push(
+          `<li><b><a href=\\\"/boards/${taskBoardId}/pulses/${items[0].id}\\\">${scoreTasks[index]}</a></b>: ${scoreDesc[index]} </li>`
+        );
+      }
+    }
   }
-
 
   const score = scores.filter((item) => item === true).length + 1;
 
@@ -185,10 +205,16 @@ export const addAuditToBoard = async (
     change_multiple_column_values(item_id: ${itemId}, board_id: ${boardId}, column_values: "{${columnValues}}") {
       id
     }
-    ${updateItems.length > 0 ? `
-    create_update (item_id: ${itemId}, body: "EarthBound's suggested improvements: \n <ul>${updateItems.join('')}</ul> \n You can click on any of these to see the created task.") {
+    ${
+      updateItems.length > 0
+        ? `
+    create_update (item_id: ${itemId}, body: "EarthBound's suggested improvements: \n <ul>${updateItems.join(
+            ""
+          )}</ul> \n You can click on any of these to see the created task.") {
       id
-    }`: ``}
+    }`
+        : ``
+    }
   }`;
   const popResponse = await mondayClient.api(addPopulateAudit);
   console.log(popResponse);
@@ -335,7 +361,7 @@ export const createAuditBoards = async (mondayClient, workspaceID) => {
       tasks_performance_group,
       tasks_page_weight_group,
       tasks_caching_group,
-    }
+    };
     boards.audits.groups = {
       outdated_audits_group,
       recent_audits_group,
