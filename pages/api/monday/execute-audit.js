@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     const value = columnValue.value;
     const text = columnValue.text;
 
-    console.log({ text, value });
+    console.log(columnValue);
     const url = value
     if (isValidUrl(url)) {
       console.log(`🚀 Incoming request to audit ${url}`);
