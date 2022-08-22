@@ -185,9 +185,10 @@ export const addAuditToBoard = async (
     change_multiple_column_values(item_id: ${itemId}, board_id: ${boardId}, column_values: "{${columnValues}}") {
       id
     }
-    create_update (item_id: ${itemId}, body: "EarthBound's suggested improvements: \n <ul>${updateItems.join('')}</ul>") {
+    ${updateItems.length > 0 ? `
+    create_update (item_id: ${itemId}, body: "EarthBound's suggested improvements: \n <ul>${updateItems.join('')}</ul> \n You can click on any of these to see the created task.") {
       id
-    }
+    }`: ``}
   }`;
   const popResponse = await mondayClient.api(addPopulateAudit);
   console.log(popResponse);

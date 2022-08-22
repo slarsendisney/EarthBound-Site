@@ -19,7 +19,11 @@ export default async function handler(req, res) {
   } = payload;
 
   if (columnValue) {
-    const url = columnValue.value;
+    const value = columnValue.value;
+    const text = columnValue.text;
+
+    console.log({ text, value });
+    const url = value
     if (isValidUrl(url)) {
       console.log(`🚀 Incoming request to audit ${url}`);
       const mondayClient = initMondayClient();

@@ -20,6 +20,8 @@ export default async function handler(req, res) {
 
   console.log({ columnId, boardId });
 
+  // { columnId: 'text', boardId: 3041176244 }
+
  
   res.status(200).send("OK");
 }
