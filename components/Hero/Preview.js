@@ -1,5 +1,6 @@
 import Image from "next/image";
 import FAQs from "../Landing/FAQ";
+import GettingStarted from "./GettingStarted";
 const Preview = () => (
   <div className="max-w-7xl mx-auto py-16 space-y-10">
     <div className="relative">
@@ -22,6 +23,7 @@ const Preview = () => (
         The <span className="font-earth text-2xl">EarthBound</span> monday.com integration is a simple way to get an overview of your website&apos;s carbon footprint. It includes:
       </p>
     <FAQs />
+    <GettingStarted/>
   </div>
 );
 
