@@ -9,10 +9,12 @@
     "start": "next start",
     "lint": "next lint",
     "expose": "ngrok http 3000",
-    "stop": "kill-port 3000 && kill-port 4040"
+    "stop": "kill-port 3000 && kill-port 4040",
+    "count": "cloc --exclude-ext=svg --not-match-d=assets components context pages public styles utils"
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",
+    "cloc": "^2.10.0",
     "firebase-admin": "^11.0.1",
     "framer-motion": "^7.2.0",
     "jsonwebtoken": "^8.5.1",
@@ -25,6 +27,7 @@
     "sass": "^1.54.4"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.4",
     "autoprefixer": "^10.4.8",
     "concurrently": "^5.2.0",
     "cross-port-killer": "^1.2.1",
