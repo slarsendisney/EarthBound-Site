@@ -3,7 +3,7 @@ const navigation = {
   social: [
     {
       name: "GitHub",
-      href: "#",
+      href: "https://github.com/slarsendisney/EarthBound-Site",
       icon: (props) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
@@ -15,8 +15,8 @@ const navigation = {
       ),
     },
     {
-      name: "Dribbble",
-      href: "#",
+      name: "DevPost",
+      href: "https://devpost.com/software/earthbound-audits",
       icon: (props) => (
         <svg {...props} fill="currentColor" viewBox="0 0 280.3 242.7">
           <g id="XMLID_126_">
